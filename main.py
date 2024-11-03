@@ -33,7 +33,7 @@ def search():
                     content_text_div = article_soup.find("div", {"class": "mw-content-ltr mw-parser-output"})
                     image_tags = content_text_div.find_all("img", src=True)
                     image_urls = [img["src"] for img in image_tags[:3]]
-                    refer = article_soup.find("div", {"class": "mw-references-wrap mw-references-columns"})
+                    refer = article_soup.find("div", {"class": "mw-references-wrap"})
                     if refer:
                         reference_urls = []
                         links = refer.find_all('a', class_='external text')
