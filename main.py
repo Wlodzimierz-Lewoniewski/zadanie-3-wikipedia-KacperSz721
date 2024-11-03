@@ -39,6 +39,7 @@ def search():
                         links = refer.find_all('a', class_='external text')
                         for link in links:
                             reference_urls.append(link.get('href'))
+                            reference_urls = [url.replace("&", "&amp;") for url in reference_urls]
                             if len(reference_urls) == 3:
                                 break
                     else:
