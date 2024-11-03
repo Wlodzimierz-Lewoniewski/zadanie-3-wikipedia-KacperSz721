@@ -33,12 +33,14 @@ def search():
                     content_text_div = article_soup.find("div", {"class": "mw-content-ltr mw-parser-output"})
                     image_tags = content_text_div.find_all("img", src=True)
                     image_urls = [img["src"] for img in image_tags[:3]]
-
-                    refer = article_soup.find('span', {"id": "Przypisy"})
+                    refer = article_soup.find("div", {"class": "mw-references-wrap mw-references-columns"})
                     if refer:
-                        references_list = refer.find_next_sibling("ol", class_="references")
-                        external_links = references_list.select('a.external.text')
-                        reference_urls = [link['href'].replace("&", "&") for link in external_links[:3]]
+                        reference_urls = []
+                        links = refer.find_all('a', class_='external text')
+                        for link in links:
+                            reference_urls.append(link.get('href'))
+                            if len(reference_urls) == 3:
+                                break
                     else:
                         reference_urls = []
 
