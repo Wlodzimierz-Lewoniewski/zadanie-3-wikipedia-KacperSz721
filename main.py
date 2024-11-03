@@ -39,12 +39,12 @@ def search():
                         links = refer.find_all('a', class_='external text')
                         for link in links:
                             reference_urls.append(link.get('href'))
-                            reference_urls = [url.replace("&", "&amp;") for url in reference_urls]
                             if len(reference_urls) == 3:
                                 break
                     else:
                         reference_urls = []
 
+                    reference_urls = [url.replace("&", "&amp;") for url in reference_urls]
                     cat = article_soup.find("div", {"id": "mw-normal-catlinks"}).find_all("a")
                     cat_names = [cat.get_text() for cat in cat[1:4]]
 
