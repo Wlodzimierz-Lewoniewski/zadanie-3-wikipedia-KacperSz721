@@ -17,7 +17,8 @@ def search():
             ]
 
             for idx in range(2):
-                if idx < len(articles):
+                len_art = len(articles)
+                if idx < len_art:
                     article = articles[idx]
                     full_url = "https://pl.wikipedia.org" + article["url"]
                     article_response = requests.get(full_url)
@@ -33,18 +34,22 @@ def search():
                     content_text_div = article_soup.find("div", {"class": "mw-content-ltr mw-parser-output"})
                     image_tags = content_text_div.find_all("img", src=True)
                     image_urls = [img["src"] for img in image_tags[:3]]
-                    refer = article_soup.find("div", {"class": "mw-references-wrap"})
-                    if refer:
-                        reference_urls = []
-                        links = refer.find_all('a', class_='external text')
-                        for link in links:
-                            reference_urls.append(link.get('href'))
-                            if len(reference_urls) == 3:
-                                break
-                    else:
-                        reference_urls = []
 
+                    refer = article_soup.find("ol", {"class": "references"})
+                    reference_urls = []
+                    if refer:
+                        links = refer.find_all('a', class_='external text')
+                        reference_urls.extend([link.get('href') for link in links if link.get('href')])
+
+                    refer_div = article_soup.find_all("li", {"id": lambda x: x and x.startswith("cite")})
+                    for ref in refer_div:
+                        link = ref.find('a', class_='external text')
+                        if link and link.get('href'):
+                            reference_urls.append(link.get('href'))
+
+                    reference_urls = list(dict.fromkeys(reference_urls))[:3]
                     reference_urls = [url.replace("&", "&amp;") for url in reference_urls]
+
                     cat = article_soup.find("div", {"id": "mw-normal-catlinks"}).find_all("a")
                     cat_names = [cat.get_text() for cat in cat[1:4]]
 
